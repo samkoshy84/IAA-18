@@ -1,0 +1,14 @@
+libname sum "C:\Users\Sam Koshy\Downloads\MSA - Summer\Summer Practicum\SAS_Data\Prepared_Data";
+
+proc contents data = sum.data_total1;run;
+data susp; set sum.data_total1; where suspact=1;run;
+
+proc sort data=susp; by zipcode;run;
+proc summary data=susp; by zipcode; output out=susp1; run;
+data susp1 (keep=zipcode freqsus);set susp1;freqsus=_freq_;run;
+
+proc sort data=sum.data_total1 out=datatot; by zipcode;run;
+proc summary data=datatot; by zipcode; output out=tot1; run;
+data tot1 (keep=zipcode freqtot);set tot1;freqtot=_freq_;run;
+
+data finale;merge tot1 susp1; by zipcode; run;

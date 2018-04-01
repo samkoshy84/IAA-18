@@ -1,0 +1,303 @@
+data sum.cmct_T sum.cmct_W sum.cmct_V;
+	set sum.cm_ct_merged_sorted;
+	if type="T" then output sum.cmct_T;
+	else if type="W" then output sum.cmct_W;
+	else if type="V" then output sum.cmct_V;
+run;
+
+proc sort data=sum.cfm_ci_merged out=sum.cfm_ci_merged_sorted;
+	by cust_id;
+run;
+data sum.cmct_H;
+	merge sum.cm_ct_merged_sorted (in=M) sum.cfm_ci_merged_sorted (in=S);
+	by cust_id; 
+	if reward_R < 300  then Health_D=0;
+	else if reward_R < 500 then Health_D=1;
+	else health_D=0;
+	if M=1 and S=1 then output sum.cmct_H;
+run;
+
+data sum.cmct_HC sum.cmct_HR;
+	set sum.cmct_H;
+	if transaction="CL" then output sum.cmct_HC;
+	else if transaction="RE" then output sum.cmct_HR;
+run;
+data cmct_HR;
+set sum.cmct_HR (keep=cov_id health_D);
+run;
+proc sort data=cmct_hr; by cov_id; run;
+proc sort data=sum.cmct_hc; by cov_id; run;
+data sum.cmct_HM;
+	merge sum.cmct_HC (in=hc) cmct_HR (in=hr);by cov_id;
+	if hc=1 and hr=1 then output sum.cmct_hm;
+run;
+
+
+proc logistic data=sum.cmct_HM plots(only)=(effect oddsratio);
+	class 	/*	Tobacco (ref="N") Caffeine (ref="N") Alcohol (ref="N") Med_HA (ref="N") Med_BP (ref="N") Med_Can (ref="N") Med_Diab (ref="N") Med_Chol (ref="N") 
+	Med_Arth (ref="N") Med_Asth (ref="N") Med_Gla (ref="N") Med_Kid (ref="N") Med_Leuk (ref="N") Med_Ment (ref="N") Med_SE (ref="N") Med_SCA (ref="N") 
+	Med_Str (ref="N") Med_TD (ref="N") Med_TB (ref="N") Med_Ul (ref="N")
+	MedF_HA (ref="N") MedF_BP (ref="N") MedF_Can (ref="N") MedF_Diab (ref="N") MedF_Chol (ref="N") MedF_Arth (ref="N") MedF_Asth (ref="N") 
+	MedF_Gla (ref="N") MedF_Kid (ref="N") MedF_Leuk (ref="N") MedF_Ment (ref="N") MedF_SE (ref="N") MedF_SCA (ref="N") MedF_Str (ref="N") 
+	MedF_TD (ref="N") MedF_TB (ref="N") MedF_Ul (ref="N") MedM_HA (ref="N") MedM_BP (ref="N") MedM_Can (ref="N") MedM_Diab (ref="N") MedM_Chol (ref="N") 
+	MedM_Arth (ref="N") MedM_Asth (ref="N") MedM_Gla (ref="N") MedM_Kid (ref="N") MedM_Leuk (ref="N") MedM_Ment (ref="N") MedM_SE (ref="N") 
+*/
+	MedM_SCA (ref="N") MedM_Str (ref="N") MedM_TD (ref="N") MedM_TB (ref="N") MedM_Ul (ref="N")
+/*
+*/
+/ param=ref;
+
+
+    model health_d(event='1')=	/*	Tobacco_Num Caffeine_Num Alcohol_Num 
+	Tobacco Caffeine Alcohol Med_HA Med_BP Med_Can Med_Diab Med_Chol 		
+	Med_Arth Med_Asth Med_Gla Med_Kid Med_Leuk Med_Ment Med_SE Med_SCA 
+	Med_Str Med_TD Med_TB Med_Ul
+	MedF_HA MedF_BP MedF_Can MedF_Diab MedF_Chol MedF_Arth MedF_Asth 
+	MedF_Gla MedF_Kid MedF_Leuk MedF_Ment MedF_SE MedF_SCA MedF_Str 
+	MedF_TD MedF_TB MedF_Ul MedM_HA MedM_BP MedM_Can MedM_Diab MedM_Chol 
+	MedM_Arth MedM_Asth MedM_Gla MedM_Kid MedM_Leuk MedM_Ment MedM_SE 
+*/
+	MedM_SCA MedM_Str MedM_TD MedM_TB MedM_Ul
+/*
+*/
+
+ / clodds=pl;
+    
+run;
+data sum.cmct_HM;
+	set sum.cmct_HM;
+	if Med_HA='N' then Med_HA1=0; else Med_HA1=1; if Med_BP='N' then Med_BP1=0; else Med_BP1=1; if Med_Can='N' then Med_Can1=0; else Med_Can1=1; if Med_Diab='N' then Med_Diab1=0; else Med_Diab1=1; if Med_Chol='N' then Med_Chol1=0; else Med_Chol1=1; if Med_Arth='N' then Med_Arth1=0; else Med_Arth1=1; if Med_Asth='N' then Med_Asth1=0; else Med_Asth1=1; if Med_Gla='N' then Med_Gla1=0; else Med_Gla1=1; if Med_Kid='N' then Med_Kid1=0; else Med_Kid1=1; if Med_Leuk='N' then Med_Leuk1=0; else Med_Leuk1=1; if Med_Ment='N' then Med_Ment1=0; else Med_Ment1=1; if Med_SE='N' then Med_SE1=0; else Med_SE1=1; if Med_SCA='N' then Med_SCA1=0; else Med_SCA1=1; if Med_Str='N' then Med_Str1=0; else Med_Str1=1; if Med_TD='N' then Med_TD1=0; else Med_TD1=1; if Med_TB='N' then Med_TB1=0; else Med_TB1=1; if Med_Ul='N' then Med_Ul1=0; else Med_Ul1=1; 
+	if MedF_HA='N' then MedF_HA1=0; else MedF_HA1=1; if MedF_BP='N' then MedF_BP1=0; else MedF_BP1=1; if MedF_Can='N' then MedF_Can1=0; else MedF_Can1=1; if MedF_Diab='N' then MedF_Diab1=0; else MedF_Diab1=1; if MedF_Chol='N' then MedF_Chol1=0; else MedF_Chol1=1; if MedF_Arth='N' then MedF_Arth1=0; else MedF_Arth1=1; if MedF_Asth='N' then MedF_Asth1=0; else MedF_Asth1=1; if MedF_Gla='N' then MedF_Gla1=0; else MedF_Gla1=1; if MedF_Kid='N' then MedF_Kid1=0; else MedF_Kid1=1; if MedF_Leuk='N' then MedF_Leuk1=0; else MedF_Leuk1=1; if MedF_Ment='N' then MedF_Ment1=0; else MedF_Ment1=1; if MedF_SE='N' then MedF_SE1=0; else MedF_SE1=1; if MedF_SCA='N' then MedF_SCA1=0; else MedF_SCA1=1; if MedF_Str='N' then MedF_Str1=0; else MedF_Str1=1; if MedF_TD='N' then MedF_TD1=0; else MedF_TD1=1; if MedF_TB='N' then MedF_TB1=0; else MedF_TB1=1; if MedF_Ul='N' then MedF_Ul1=0; else MedF_Ul1=1; if MedM_HA='N' then MedM_HA1=0; else MedM_HA1=1; if MedM_BP='N' then MedM_BP1=0; else MedM_BP1=1; if MedM_Can='N' then MedM_Can1=0; else MedM_Can1=1; if MedM_Diab='N' then MedM_Diab1=0; else MedM_Diab1=1; if MedM_Chol='N' then MedM_Chol1=0; else MedM_Chol1=1; if MedM_Arth='N' then MedM_Arth1=0; else MedM_Arth1=1; if MedM_Asth='N' then MedM_Asth1=0; else MedM_Asth1=1; if MedM_Gla='N' then MedM_Gla1=0; else MedM_Gla1=1; if MedM_Kid='N' then MedM_Kid1=0; else MedM_Kid1=1; if MedM_Leuk='N' then MedM_Leuk1=0; else MedM_Leuk1=1; if MedM_Ment='N' then MedM_Ment1=0; else MedM_Ment1=1; if MedM_SE='N' then MedM_SE1=0; else MedM_SE1=1; if MedM_SCA='N' then MedM_SCA1=0; else MedM_SCA1=1; if MedM_Str='N' then MedM_Str1=0; else MedM_Str1=1; if MedM_TD='N' then MedM_TD1=0; else MedM_TD1=1; if MedM_TB='N' then MedM_TB1=0; else MedM_TB1=1; if MedM_Ul='N' then MedM_Ul1=0; else MedM_Ul1=1; 
+run;
+
+data sum.cmct_HM;
+	set sum.cmct_hm;
+	self=Med_HA1+Med_BP1+Med_Can1+Med_Diab1+Med_Chol1+Med_Arth1+Med_Asth1+Med_Gla1+Med_Kid1+Med_Leuk1+Med_Ment1+Med_SE1+Med_SCA1+Med_Str1+Med_TD1+Med_TB1+Med_Ul1
+	;
+	father=MedF_HA1+MedF_BP1+MedF_Can1+MedF_Diab1+MedF_Chol1+MedF_Arth1+MedF_Asth1+MedF_Gla1+MedF_Kid1+MedF_Leuk1+MedF_Ment1+MedF_SE1+MedF_SCA1+MedF_Str1+MedF_TD1+MedF_TB1+MedF_Ul1
+	;
+	mother=MedM_HA1+MedM_BP1+MedM_Can1+MedM_Diab1+MedM_Chol1+MedM_Arth1+MedM_Asth1+MedM_Gla1+MedM_Kid1+MedM_Leuk1+MedM_Ment1+MedM_SE1+MedM_SCA1+MedM_Str1+MedM_TD1+MedM_TB1+MedM_Ul1
+	;
+run;
+
+proc logistic data=sum.cmct_HM plots(only)=(effect oddsratio);
+    
+    model health_d(event='1')=self father mother / clodds=pl;
+run;
+
+
+data sum.cmct_T1;
+	merge sum.cmct_T (in=T) sum.cfm_ci_merged_sorted (in=S);
+	by cust_id; 
+	if T=1 and S=1 then output sum.cmct_T1;
+run;
+data sum.cmct_W1;
+	merge sum.cmct_W (in=W) sum.cfm_ci_merged_sorted (in=S);
+	by cust_id; 
+	if W=1 and S=1 then output sum.cmct_W1;
+run;
+data sum.cmct_V1;
+	merge sum.cmct_V (in=V) sum.cfm_ci_merged_sorted (in=S);
+	by cust_id; 
+	if V=1 and S=1 then output sum.cmct_V1;
+run;
+
+data sum.cmct_T1C sum.cmct_T1R;
+	set sum.cmct_T1;
+	if transaction="CL" then output sum.cmct_T1C;
+	else if transaction="RE" then output sum.cmct_T1R;
+run;
+
+data sum.cmct_W1C sum.cmct_W1R;
+	set sum.cmct_W1;
+	if transaction="CL" then output sum.cmct_W1C;
+	else if transaction="RE" then output sum.cmct_W1R;
+run;
+
+data sum.cmct_V1C sum.cmct_V1R;
+	set sum.cmct_V1;
+	if transaction="CL" then output sum.cmct_V1C;
+	else if transaction="RE" then output sum.cmct_V1R;
+run;
+
+data cmct_T1R;
+set sum.cmct_T1R (keep=cov_id reward_R);
+run;
+data cmct_W1R;
+set sum.cmct_W1R (keep=cov_id reward_R);
+run;
+data cmct_V1R;
+set sum.cmct_V1R (keep=cov_id reward_R);
+run;
+proc sort data=cmct_T1R; by cov_id; run;
+proc sort data=cmct_W1R; by cov_id; run;
+proc sort data=cmct_V1R; by cov_id; run;
+proc sort data=sum.cmct_T1C; by cov_id; run;
+proc sort data=sum.cmct_W1C; by cov_id; run;
+proc sort data=sum.cmct_V1C; by cov_id; run;
+data sum.cmct_TM;
+	merge sum.cmct_T1C (in=c) cmct_T1R (in=r);by cov_id;
+	if c=1 and r=1 then output sum.cmct_tm;
+run;
+data sum.cmct_WM;
+	merge sum.cmct_W1C (in=c) cmct_W1R (in=r);by cov_id;
+	if c=1 and r=1 then output sum.cmct_wm;
+run;
+data sum.cmct_VM;
+	merge sum.cmct_v1C (in=c) cmct_v1R (in=r);by cov_id;
+	if c=1 and r=1 then output sum.cmct_vm;
+run;
+
+
+data sum.cmct_TM;
+	set sum.cmct_TM;
+	if Med_HA='N' then Med_HA1=0; else Med_HA1=1; if Med_BP='N' then Med_BP1=0; else Med_BP1=1; if Med_Can='N' then Med_Can1=0; else Med_Can1=1; if Med_Diab='N' then Med_Diab1=0; else Med_Diab1=1; if Med_Chol='N' then Med_Chol1=0; else Med_Chol1=1; if Med_Arth='N' then Med_Arth1=0; else Med_Arth1=1; if Med_Asth='N' then Med_Asth1=0; else Med_Asth1=1; if Med_Gla='N' then Med_Gla1=0; else Med_Gla1=1; if Med_Kid='N' then Med_Kid1=0; else Med_Kid1=1; if Med_Leuk='N' then Med_Leuk1=0; else Med_Leuk1=1; if Med_Ment='N' then Med_Ment1=0; else Med_Ment1=1; if Med_SE='N' then Med_SE1=0; else Med_SE1=1; if Med_SCA='N' then Med_SCA1=0; else Med_SCA1=1; if Med_Str='N' then Med_Str1=0; else Med_Str1=1; if Med_TD='N' then Med_TD1=0; else Med_TD1=1; if Med_TB='N' then Med_TB1=0; else Med_TB1=1; if Med_Ul='N' then Med_Ul1=0; else Med_Ul1=1; 
+	if MedF_HA='N' then MedF_HA1=0; else MedF_HA1=1; if MedF_BP='N' then MedF_BP1=0; else MedF_BP1=1; if MedF_Can='N' then MedF_Can1=0; else MedF_Can1=1; if MedF_Diab='N' then MedF_Diab1=0; else MedF_Diab1=1; if MedF_Chol='N' then MedF_Chol1=0; else MedF_Chol1=1; if MedF_Arth='N' then MedF_Arth1=0; else MedF_Arth1=1; if MedF_Asth='N' then MedF_Asth1=0; else MedF_Asth1=1; if MedF_Gla='N' then MedF_Gla1=0; else MedF_Gla1=1; if MedF_Kid='N' then MedF_Kid1=0; else MedF_Kid1=1; if MedF_Leuk='N' then MedF_Leuk1=0; else MedF_Leuk1=1; if MedF_Ment='N' then MedF_Ment1=0; else MedF_Ment1=1; if MedF_SE='N' then MedF_SE1=0; else MedF_SE1=1; if MedF_SCA='N' then MedF_SCA1=0; else MedF_SCA1=1; if MedF_Str='N' then MedF_Str1=0; else MedF_Str1=1; if MedF_TD='N' then MedF_TD1=0; else MedF_TD1=1; if MedF_TB='N' then MedF_TB1=0; else MedF_TB1=1; if MedF_Ul='N' then MedF_Ul1=0; else MedF_Ul1=1; if MedM_HA='N' then MedM_HA1=0; else MedM_HA1=1; if MedM_BP='N' then MedM_BP1=0; else MedM_BP1=1; if MedM_Can='N' then MedM_Can1=0; else MedM_Can1=1; if MedM_Diab='N' then MedM_Diab1=0; else MedM_Diab1=1; if MedM_Chol='N' then MedM_Chol1=0; else MedM_Chol1=1; if MedM_Arth='N' then MedM_Arth1=0; else MedM_Arth1=1; if MedM_Asth='N' then MedM_Asth1=0; else MedM_Asth1=1; if MedM_Gla='N' then MedM_Gla1=0; else MedM_Gla1=1; if MedM_Kid='N' then MedM_Kid1=0; else MedM_Kid1=1; if MedM_Leuk='N' then MedM_Leuk1=0; else MedM_Leuk1=1; if MedM_Ment='N' then MedM_Ment1=0; else MedM_Ment1=1; if MedM_SE='N' then MedM_SE1=0; else MedM_SE1=1; if MedM_SCA='N' then MedM_SCA1=0; else MedM_SCA1=1; if MedM_Str='N' then MedM_Str1=0; else MedM_Str1=1; if MedM_TD='N' then MedM_TD1=0; else MedM_TD1=1; if MedM_TB='N' then MedM_TB1=0; else MedM_TB1=1; if MedM_Ul='N' then MedM_Ul1=0; else MedM_Ul1=1; 
+run;
+
+data sum.cmct_TM;
+	set sum.cmct_TM;
+	self=Med_HA1+Med_BP1+Med_Can1+Med_Diab1+Med_Chol1+Med_Arth1+Med_Asth1+Med_Gla1+Med_Kid1+Med_Leuk1+Med_Ment1+Med_SE1+Med_SCA1+Med_Str1+Med_TD1+Med_TB1+Med_Ul1
+	;
+	father=MedF_HA1+MedF_BP1+MedF_Can1+MedF_Diab1+MedF_Chol1+MedF_Arth1+MedF_Asth1+MedF_Gla1+MedF_Kid1+MedF_Leuk1+MedF_Ment1+MedF_SE1+MedF_SCA1+MedF_Str1+MedF_TD1+MedF_TB1+MedF_Ul1
+	;
+	mother=MedM_HA1+MedM_BP1+MedM_Can1+MedM_Diab1+MedM_Chol1+MedM_Arth1+MedM_Asth1+MedM_Gla1+MedM_Kid1+MedM_Leuk1+MedM_Ment1+MedM_SE1+MedM_SCA1+MedM_Str1+MedM_TD1+MedM_TB1+MedM_Ul1
+	;
+run;
+data sum.cmct_VM;
+	set sum.cmct_VM;
+	if Med_HA='N' then Med_HA1=0; else Med_HA1=1; if Med_BP='N' then Med_BP1=0; else Med_BP1=1; if Med_Can='N' then Med_Can1=0; else Med_Can1=1; if Med_Diab='N' then Med_Diab1=0; else Med_Diab1=1; if Med_Chol='N' then Med_Chol1=0; else Med_Chol1=1; if Med_Arth='N' then Med_Arth1=0; else Med_Arth1=1; if Med_Asth='N' then Med_Asth1=0; else Med_Asth1=1; if Med_Gla='N' then Med_Gla1=0; else Med_Gla1=1; if Med_Kid='N' then Med_Kid1=0; else Med_Kid1=1; if Med_Leuk='N' then Med_Leuk1=0; else Med_Leuk1=1; if Med_Ment='N' then Med_Ment1=0; else Med_Ment1=1; if Med_SE='N' then Med_SE1=0; else Med_SE1=1; if Med_SCA='N' then Med_SCA1=0; else Med_SCA1=1; if Med_Str='N' then Med_Str1=0; else Med_Str1=1; if Med_TD='N' then Med_TD1=0; else Med_TD1=1; if Med_TB='N' then Med_TB1=0; else Med_TB1=1; if Med_Ul='N' then Med_Ul1=0; else Med_Ul1=1; 
+	if MedF_HA='N' then MedF_HA1=0; else MedF_HA1=1; if MedF_BP='N' then MedF_BP1=0; else MedF_BP1=1; if MedF_Can='N' then MedF_Can1=0; else MedF_Can1=1; if MedF_Diab='N' then MedF_Diab1=0; else MedF_Diab1=1; if MedF_Chol='N' then MedF_Chol1=0; else MedF_Chol1=1; if MedF_Arth='N' then MedF_Arth1=0; else MedF_Arth1=1; if MedF_Asth='N' then MedF_Asth1=0; else MedF_Asth1=1; if MedF_Gla='N' then MedF_Gla1=0; else MedF_Gla1=1; if MedF_Kid='N' then MedF_Kid1=0; else MedF_Kid1=1; if MedF_Leuk='N' then MedF_Leuk1=0; else MedF_Leuk1=1; if MedF_Ment='N' then MedF_Ment1=0; else MedF_Ment1=1; if MedF_SE='N' then MedF_SE1=0; else MedF_SE1=1; if MedF_SCA='N' then MedF_SCA1=0; else MedF_SCA1=1; if MedF_Str='N' then MedF_Str1=0; else MedF_Str1=1; if MedF_TD='N' then MedF_TD1=0; else MedF_TD1=1; if MedF_TB='N' then MedF_TB1=0; else MedF_TB1=1; if MedF_Ul='N' then MedF_Ul1=0; else MedF_Ul1=1; if MedM_HA='N' then MedM_HA1=0; else MedM_HA1=1; if MedM_BP='N' then MedM_BP1=0; else MedM_BP1=1; if MedM_Can='N' then MedM_Can1=0; else MedM_Can1=1; if MedM_Diab='N' then MedM_Diab1=0; else MedM_Diab1=1; if MedM_Chol='N' then MedM_Chol1=0; else MedM_Chol1=1; if MedM_Arth='N' then MedM_Arth1=0; else MedM_Arth1=1; if MedM_Asth='N' then MedM_Asth1=0; else MedM_Asth1=1; if MedM_Gla='N' then MedM_Gla1=0; else MedM_Gla1=1; if MedM_Kid='N' then MedM_Kid1=0; else MedM_Kid1=1; if MedM_Leuk='N' then MedM_Leuk1=0; else MedM_Leuk1=1; if MedM_Ment='N' then MedM_Ment1=0; else MedM_Ment1=1; if MedM_SE='N' then MedM_SE1=0; else MedM_SE1=1; if MedM_SCA='N' then MedM_SCA1=0; else MedM_SCA1=1; if MedM_Str='N' then MedM_Str1=0; else MedM_Str1=1; if MedM_TD='N' then MedM_TD1=0; else MedM_TD1=1; if MedM_TB='N' then MedM_TB1=0; else MedM_TB1=1; if MedM_Ul='N' then MedM_Ul1=0; else MedM_Ul1=1; 
+run;
+
+data sum.cmct_VM;
+	set sum.cmct_VM;
+	self=Med_HA1+Med_BP1+Med_Can1+Med_Diab1+Med_Chol1+Med_Arth1+Med_Asth1+Med_Gla1+Med_Kid1+Med_Leuk1+Med_Ment1+Med_SE1+Med_SCA1+Med_Str1+Med_TD1+Med_TB1+Med_Ul1
+	;
+	father=MedF_HA1+MedF_BP1+MedF_Can1+MedF_Diab1+MedF_Chol1+MedF_Arth1+MedF_Asth1+MedF_Gla1+MedF_Kid1+MedF_Leuk1+MedF_Ment1+MedF_SE1+MedF_SCA1+MedF_Str1+MedF_TD1+MedF_TB1+MedF_Ul1
+	;
+	mother=MedM_HA1+MedM_BP1+MedM_Can1+MedM_Diab1+MedM_Chol1+MedM_Arth1+MedM_Asth1+MedM_Gla1+MedM_Kid1+MedM_Leuk1+MedM_Ment1+MedM_SE1+MedM_SCA1+MedM_Str1+MedM_TD1+MedM_TB1+MedM_Ul1
+	;
+run;
+data sum.cmct_WM;
+	set sum.cmct_WM;
+	if Med_HA='N' then Med_HA1=0; else Med_HA1=1; if Med_BP='N' then Med_BP1=0; else Med_BP1=1; if Med_Can='N' then Med_Can1=0; else Med_Can1=1; if Med_Diab='N' then Med_Diab1=0; else Med_Diab1=1; if Med_Chol='N' then Med_Chol1=0; else Med_Chol1=1; if Med_Arth='N' then Med_Arth1=0; else Med_Arth1=1; if Med_Asth='N' then Med_Asth1=0; else Med_Asth1=1; if Med_Gla='N' then Med_Gla1=0; else Med_Gla1=1; if Med_Kid='N' then Med_Kid1=0; else Med_Kid1=1; if Med_Leuk='N' then Med_Leuk1=0; else Med_Leuk1=1; if Med_Ment='N' then Med_Ment1=0; else Med_Ment1=1; if Med_SE='N' then Med_SE1=0; else Med_SE1=1; if Med_SCA='N' then Med_SCA1=0; else Med_SCA1=1; if Med_Str='N' then Med_Str1=0; else Med_Str1=1; if Med_TD='N' then Med_TD1=0; else Med_TD1=1; if Med_TB='N' then Med_TB1=0; else Med_TB1=1; if Med_Ul='N' then Med_Ul1=0; else Med_Ul1=1; 
+	if MedF_HA='N' then MedF_HA1=0; else MedF_HA1=1; if MedF_BP='N' then MedF_BP1=0; else MedF_BP1=1; if MedF_Can='N' then MedF_Can1=0; else MedF_Can1=1; if MedF_Diab='N' then MedF_Diab1=0; else MedF_Diab1=1; if MedF_Chol='N' then MedF_Chol1=0; else MedF_Chol1=1; if MedF_Arth='N' then MedF_Arth1=0; else MedF_Arth1=1; if MedF_Asth='N' then MedF_Asth1=0; else MedF_Asth1=1; if MedF_Gla='N' then MedF_Gla1=0; else MedF_Gla1=1; if MedF_Kid='N' then MedF_Kid1=0; else MedF_Kid1=1; if MedF_Leuk='N' then MedF_Leuk1=0; else MedF_Leuk1=1; if MedF_Ment='N' then MedF_Ment1=0; else MedF_Ment1=1; if MedF_SE='N' then MedF_SE1=0; else MedF_SE1=1; if MedF_SCA='N' then MedF_SCA1=0; else MedF_SCA1=1; if MedF_Str='N' then MedF_Str1=0; else MedF_Str1=1; if MedF_TD='N' then MedF_TD1=0; else MedF_TD1=1; if MedF_TB='N' then MedF_TB1=0; else MedF_TB1=1; if MedF_Ul='N' then MedF_Ul1=0; else MedF_Ul1=1; if MedM_HA='N' then MedM_HA1=0; else MedM_HA1=1; if MedM_BP='N' then MedM_BP1=0; else MedM_BP1=1; if MedM_Can='N' then MedM_Can1=0; else MedM_Can1=1; if MedM_Diab='N' then MedM_Diab1=0; else MedM_Diab1=1; if MedM_Chol='N' then MedM_Chol1=0; else MedM_Chol1=1; if MedM_Arth='N' then MedM_Arth1=0; else MedM_Arth1=1; if MedM_Asth='N' then MedM_Asth1=0; else MedM_Asth1=1; if MedM_Gla='N' then MedM_Gla1=0; else MedM_Gla1=1; if MedM_Kid='N' then MedM_Kid1=0; else MedM_Kid1=1; if MedM_Leuk='N' then MedM_Leuk1=0; else MedM_Leuk1=1; if MedM_Ment='N' then MedM_Ment1=0; else MedM_Ment1=1; if MedM_SE='N' then MedM_SE1=0; else MedM_SE1=1; if MedM_SCA='N' then MedM_SCA1=0; else MedM_SCA1=1; if MedM_Str='N' then MedM_Str1=0; else MedM_Str1=1; if MedM_TD='N' then MedM_TD1=0; else MedM_TD1=1; if MedM_TB='N' then MedM_TB1=0; else MedM_TB1=1; if MedM_Ul='N' then MedM_Ul1=0; else MedM_Ul1=1; 
+run;
+
+data sum.cmct_WM;
+	set sum.cmct_WM;
+	self=Med_HA1+Med_BP1+Med_Can1+Med_Diab1+Med_Chol1+Med_Arth1+Med_Asth1+Med_Gla1+Med_Kid1+Med_Leuk1+Med_Ment1+Med_SE1+Med_SCA1+Med_Str1+Med_TD1+Med_TB1+Med_Ul1
+	;
+	father=MedF_HA1+MedF_BP1+MedF_Can1+MedF_Diab1+MedF_Chol1+MedF_Arth1+MedF_Asth1+MedF_Gla1+MedF_Kid1+MedF_Leuk1+MedF_Ment1+MedF_SE1+MedF_SCA1+MedF_Str1+MedF_TD1+MedF_TB1+MedF_Ul1
+	;
+	mother=MedM_HA1+MedM_BP1+MedM_Can1+MedM_Diab1+MedM_Chol1+MedM_Arth1+MedM_Asth1+MedM_Gla1+MedM_Kid1+MedM_Leuk1+MedM_Ment1+MedM_SE1+MedM_SCA1+MedM_Str1+MedM_TD1+MedM_TB1+MedM_Ul1
+	;
+run;
+data sum.cmct_TM;
+	set sum.cmct_TM;
+	age=(date-birthday)/365;car=substr(a,1,find(vehicle," ")-1);
+run;
+
+
+proc glm data=sum.cmct_TM order=internal;
+    class gender state race marriage;
+    model reward_r = income self father mother tobacco_num caffeine_num alcohol_num gender state age pounds race marriage;
+  
+run;
+quit;
+
+proc surveyselect data=sum.cmct_TM 
+  method=srs rate=0.4 out=sum.cmct_TM_split outall;
+  run;
+
+  data sum.cmct_TM_train sum.cmct_TM_valid;
+   set sum.cmct_TM_split;
+   if Selected=1 then output sum.cmct_TM_valid;
+   else output sum.cmct_TM_train;
+   run;
+
+ods graphics;
+proc glmselect data=sum.cmct_TM_train plots=all
+         valdata=sum.cmct_TM_valid;
+class gender state race marriage;
+model reward_r = income self father mother tobacco_num caffeine_num alcohol_num gender state age pounds race marriage
+  /selection=backward select=sbc choose=validate;
+/*store out=amesstore;
+title 'Selecting the best model using honest assessment';*/
+run;
+
+
+
+
+
+data sum.cmct_VM;
+	set sum.cmct_VM;
+	age=(date-birthday)/365;car=substr(a,1,find(vehicle," ")-1);
+run;
+
+
+proc glm data=sum.cmct_VM order=internal;
+    class gender state race marriage;
+    model reward_r = income self father mother tobacco_num caffeine_num alcohol_num gender state age pounds race marriage;
+  
+run;
+quit;
+
+proc surveyselect data=sum.cmct_VM 
+  method=srs rate=0.4 out=sum.cmct_TM_split outall;
+  run;
+
+  data sum.cmct_VM_train sum.cmct_VM_valid;
+   set sum.cmct_TM_split;
+   if Selected=1 then output sum.cmct_TM_valid;
+   else output sum.cmct_TM_train;
+   run;
+
+ods graphics;
+proc glmselect data=sum.cmct_VM_train plots=all
+         valdata=sum.cmct_VM_valid;
+class gender state race marriage;
+model reward_r = income self father mother tobacco_num caffeine_num alcohol_num gender state age pounds race marriage
+  /selection=backward select=sbc choose=validate;
+/*store out=amesstore;
+title 'Selecting the best model using honest assessment';*/
+run;
+
+
+
+
+
+
+data sum.cmct_WM;
+	set sum.cmct_WM;
+	age=(date-birthday)/365;car=substr(a,1,find(vehicle," ")-1);
+run;
+
+
+proc glm data=sum.cmct_WM order=internal;
+    class gender state race marriage;
+    model reward_r = income self father mother tobacco_num caffeine_num alcohol_num gender state age pounds race marriage;
+  
+run;
+quit;
+
+proc surveyselect data=sum.cmct_WM 
+  method=srs rate=0.4 out=sum.cmct_TM_split outall;
+  run;
+
+  data sum.cmct_WM_train sum.cmct_WM_valid;
+   set sum.cmct_TM_split;
+   if Selected=1 then output sum.cmct_TM_valid;
+   else output sum.cmct_TM_train;
+   run;
+
+ods graphics;
+proc glmselect data=sum.cmct_WM_train plots=all
+         valdata=sum.cmct_VM_valid;
+class gender state race marriage;
+model reward_r = income self father mother tobacco_num caffeine_num alcohol_num gender state age pounds race marriage
+  /selection=backward select=sbc choose=validate;
+/*store out=amesstore;
+title 'Selecting the best model using honest assessment';*/
+run;

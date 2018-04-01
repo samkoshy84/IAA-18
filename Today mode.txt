@@ -1,0 +1,258 @@
+proc sql;
+create table cust as
+select distinct cust_id, count(*) as count
+from sum.duplicates_cm
+group by cust_id;
+quit;
+
+proc sql;
+create table cov as
+select distinct cov_id, count(*) as count
+from sum.duplicates_cm
+group by cov_id;
+quit;
+
+proc sort data=cust; by count; run;
+proc sort data=cov; by count; run;
+
+data sumprac1.duplicates_CM_sorted1;
+	set sumprac1.duplicates_CM_sorted;
+	if upcase(alcohol) = "N" then alcohol1 = 0; else if upcase(alcohol) = "Y" then alcohol1 = 1;
+	if upcase(caffeine) = "N" then caffeine1 = 0; else if upcase(caffeine) = "Y" then caffeine1 = 1;
+	if upcase(med_arth) = "N" then med_arth1 = 0; else if upcase(med_arth) = "Y" then med_arth1 = 1;
+	if upcase(med_asth) = "N" then med_asth1 = 0; else if upcase(med_asth) = "Y" then med_asth1 = 1;
+	if upcase(med_bp) = "N" then med_bp1 = 0; else if upcase(med_bp) = "Y" then med_bp1 = 1;
+	if upcase(med_can) = "N" then med_can1 = 0; else if upcase(med_can) = "Y" then med_can1 = 1;
+	if upcase(med_chol) = "N" then med_chol1 = 0; else if upcase(med_chol) = "Y" then med_chol1 = 1;
+	if upcase(med_diab) = "N" then med_diab1 = 0; else if upcase(med_diab) = "Y" then med_diab1 = 1;
+	if upcase(med_gla) = "N" then med_gla1 = 0; else if upcase(med_gla) = "Y" then med_gla1 = 1;
+	if upcase(med_ha) = "N" then med_ha1 = 0; else if upcase(med_ha) = "Y" then med_ha1 = 1;
+	if upcase(med_kid) = "N" then med_kid1 = 0; else if upcase(med_kid) = "Y" then med_kid1 = 1;
+	if upcase(med_leuk) = "N" then med_leuk1 = 0; else if upcase(med_leuk) = "Y" then med_leuk1 = 1;
+	if upcase(med_ment) = "N" then med_ment1 = 0; else if upcase(med_ment) = "Y" then med_ment1 = 1;
+	if upcase(med_sca) = "N" then med_sca1 = 0; else if upcase(med_sca) = "Y" then med_sca1 = 1;
+	if upcase(med_se) = "N" then med_se1 = 0; else if upcase(med_se) = "Y" then med_se1 = 1;
+	if upcase(med_str) = "N" then med_str1 = 0; else if upcase(med_str) = "Y" then med_str1 = 1;
+	if upcase(med_tb) = "N" then med_tb1 = 0; else if upcase(med_tb) = "Y" then med_tb1 = 1;
+	if upcase(med_td) = "N" then med_td1 = 0; else if upcase(med_td) = "Y" then med_td1 = 1;
+	if upcase(med_ul) = "N" then med_ul1 = 0; else if upcase(med_ul) = "Y" then med_ul1 = 1;
+	if upcase(tobacco) = "N" then tobacco1 = 0; else if upcase(tobacco) = "Y" then tobacco1 = 1;
+run;
+
+data sumprac1.duplicates_CM_sorted2;
+set sumprac1.duplicates_CM_sorted1 (drop = Alcohol Caffeine Med_Arth Med_Asth Med_BP Med_Can Med_Chol Med_Diab Med_Gla Med_HA Med_Kid Med_Leuk Med_Ment Med_SCA Med_SE Med_Str Med_TB Med_TD Med_Ul Tobacco);
+run;
+
+data sumprac1.duplicates_CM_sorted2 (rename= (Alcohol1=Alcohol  Caffeine1=Caffeine  Med_Arth1=Med_Arth  Med_Asth1=Med_Asth  Med_BP1=Med_BP  Med_Can1=Med_Can  Med_Chol1=Med_Chol  Med_Diab1=Med_Diab  Med_Gla1=Med_Gla  Med_HA1=Med_HA  Med_Kid1=Med_Kid  Med_Leuk1=Med_Leuk  Med_Ment1=Med_Ment  Med_SCA1=Med_SCA  Med_SE1=Med_SE  Med_Str1=Med_Str  Med_TB1=Med_TB  Med_TD1=Med_TD  Med_Ul1=Med_Ul  Tobacco1=Tobacco));
+set sumprac1.duplicates_CM_sorted2;
+run;
+
+
+Proc sql;
+
+create table sumprac1.duplicates_CM_collapsed as
+
+select date, cust_id, cov_id, uid, mean(alcohol_Num) as alcohol_num, mean(Caffeine_Num) as caffeine_num, mean(Tobacco_Num) as tobacco_num,
+mean(Alcohol) as Alcohol, mean(Caffeine) as Caffeine, mean(Med_Arth) as Med_Arth, 
+mean(Med_Asth) as Med_Asth, mean(Med_BP) as Med_BP, mean(Med_Can) as Med_Can, mean(Med_Chol) as Med_Chol, mean(Med_Diab) as Med_Diab, 
+mean(Med_Gla) as Med_Gla, mean(Med_HA) as Med_HA, mean(Med_Kid) as Med_Kid, mean(Med_Leuk) as Med_Leuk, mean(Med_Ment) as Med_Ment, 
+mean(Med_SCA) as Med_SCA, mean(Med_SE) as Med_SE, mean(Med_Str) as Med_Str, mean(Med_TB) as Med_TB, mean(Med_TD) as Med_TD, 
+mean(Med_Ul) as Med_Ul, mean(Tobacco) as Tobacco
+ 
+from sumprac1.duplicates_CM_sorted2
+group by uid;
+quit;
+
+
+data sumprac1.duplicates_CM_collapsed1;
+	set sumprac1.duplicates_CM_collapsed;
+	if alcohol < .5 then alcohol1 = "N"; else alcohol1 = "Y" ;
+	if caffeine < .5 then caffeine1 = "N"; else caffeine1 = "Y";
+	if med_arth < .5 then med_arth1 = "N"; else med_arth1 = "Y";
+	if med_asth < .5 then med_asth1 = "N"; else med_asth1 = "Y";
+	if med_bp < .5 then med_bp1 = "N"; else med_bp1 = "Y";
+	if med_can < .5 then med_can1 = "N"; else med_can1 = "Y";
+	if med_chol < .5 then med_chol1 = "N"; else med_chol1 = "Y";
+	if med_diab < .5 then med_diab1 = "N"; else med_diab1 = "Y";
+	if med_gla < .5 then med_gla1 = "N"; else med_gla1 = "Y";
+	if med_ha < .5 then med_ha1 = "N"; else med_ha1 = "Y";
+	if med_kid < .5 then med_kid1 = "N"; else med_kid1 = "Y";
+	if med_leuk < .5 then med_leuk1 = "N"; else med_leuk1 = "Y";
+	if med_ment < .5 then med_ment1 = "N"; else med_ment1 = "Y";
+	if med_sca < .5 then med_sca1 = "N"; else med_sca1 = "Y";
+	if med_se < .5 then med_se1 = "N"; else med_se1 = "Y";
+	if med_str < .5 then med_str1 = "N"; else med_str1 = "Y";
+	if med_tb < .5 then med_tb1 = "N"; else med_tb1 = "Y";
+	if med_td < .5 then med_td1 = "N"; else med_td1 = "Y";
+	if med_ul < .5 then med_ul1 = "N"; else med_ul1 = "Y";
+	if tobacco < .5 then tobacco1 = "N"; else tobacco1 = "Y";
+run;
+
+
+data sumprac1.duplicates_CM_collapsed2;
+set sumprac1.duplicates_CM_collapsed1 (drop = Alcohol Caffeine Med_Arth Med_Asth Med_BP Med_Can Med_Chol Med_Diab Med_Gla Med_HA Med_Kid Med_Leuk Med_Ment Med_SCA Med_SE Med_Str Med_TB Med_TD Med_Ul Tobacco);
+run;
+
+data sumprac1.duplicates_CM_collapsed2 (rename= (Alcohol1=Alcohol  Caffeine1=Caffeine  Med_Arth1=Med_Arth  Med_Asth1=Med_Asth  Med_BP1=Med_BP  Med_Can1=Med_Can  Med_Chol1=Med_Chol  Med_Diab1=Med_Diab  Med_Gla1=Med_Gla  Med_HA1=Med_HA  Med_Kid1=Med_Kid  Med_Leuk1=Med_Leuk  Med_Ment1=Med_Ment  Med_SCA1=Med_SCA  Med_SE1=Med_SE  Med_Str1=Med_Str  Med_TB1=Med_TB  Med_TD1=Med_TD  Med_Ul1=Med_Ul  Tobacco1=Tobacco));
+set sumprac1.duplicates_CM_collapsed2;
+run;
+
+data sumprac1.duplicates_CM_CT_Merged;
+	merge sumprac1.duplicates_CM_collapsed2 sumprac1.duplicates_CT_sorted;
+	by uid;
+run;
+
+
+data sumprac1.unique_CM_CT_Merged;
+	merge sumprac1.unique_CM sumprac1.unique_CT;
+	by uid;
+run;
+
+
+data sumprac1.CM_CT_Merged;
+	set sumprac1.unique_cm_ct_merged sumprac1.duplicates_CM_CT_Merged;
+	by uid;
+run;
+
+
+proc sort data = sumprac1.CM_CT_Merged;
+	by cust_id cov_id date;
+run;
+
+
+
+libname sumprac "C:\Users\Sam Koshy\Downloads\MSA - Summer\Summer Practicum\SAS_Data";
+
+
+
+
+data sumprac1.CMCT_IN;
+set sumprac1.CM_CT_merged_sorted;
+where transaction="IN";
+run;
+
+proc contents data=sumprac1.cfm_sorted;run;
+
+data sumprac1.total_IN;
+	merge sumprac1.CMCT_IN sumprac1.cfm_sorted;
+	by cust_id;
+run;
+
+
+data sumprac1.data_total1;
+	merge sumprac1.total_IN sumprac1.data_total;
+	by cust_id;
+run;
+
+proc sort data=sumprac1.data_total1;
+	by cust_id cov_id date;
+run;
+
+/*data sumprac1.data_totals;
+	merge sumprac1.data_total1 sumprac1.at_sorted;
+	by cov_id;
+run;*/
+
+proc surveyselect data=sumprac1.data_total1 
+  method=srs rate=0.3 out=sumprac1.data_split outall;
+ run;
+
+  data sumprac1.data_train sumprac1.data_valid;
+   set sumprac1.data_split;
+   if Selected=1 then output sumprac1.data_valid;
+   else output sumprac1.data_train;
+  run;
+
+
+proc contents data=sumprac1.data_train;run;
+/*
+
+%let categoricaltot=
+%let intervaltot=
+
+*/  
+
+proc logistic data=sumprac1.data_train plots(only)=(effect oddsratio);
+    class tobacco(ref='N') caffeine(ref='N') alcohol(ref="N") / param=ref;
+    model suspact(event='1')=tobacco|caffeine|alcohol / 
+          selection=backward clodds=pl slstay=0.10;
+run;
+
+proc logistic data=sumprac1.data_train plots(only)=(effect oddsratio);
+    class med_ha(ref='N') med_bp(ref='N') med_can(ref="N") med_diab(ref="N") med_chol(ref="N") med_arth(ref="N")/ param=ref;
+    model suspact(event='1')=med_ha|med_bp|med_can|med_diab|med_chol|med_arth / 
+          selection=backward clodds=pl slstay=0.10;
+run;
+
+
+proc logistic data=sumprac1.data_train plots(only)=(effect oddsratio);
+    class med_gla(ref='N') med_kid(ref='N') med_leuk(ref="N") med_ment(ref="N") med_se(ref="N") med_sca(ref="N")/ param=ref;
+    model suspact(event='1')=med_gla|med_kid|med_leuk|med_ment|med_se|med_sca / 
+          selection=backward clodds=pl slstay=0.10;
+run;
+
+
+proc logistic data=sumprac1.data_train plots(only)=(effect oddsratio);
+    class med_str(ref='N') med_td(ref='N') med_tb(ref="N") med_ul(ref="N") / param=ref;
+    model suspact(event='1')=med_str|med_td|med_tb|med_ul / 
+          selection=backward clodds=pl slstay=0.10;
+run;
+
+proc logistic data=sumprac1.data_train plots(only)=(effect oddsratio);
+    model suspact(event='1')=income|cov_limit / 
+          selection=backward clodds=pl slstay=0.10;
+		  units income=1000 cov_limit=1000;
+run;
+
+
+proc logistic data=sumprac1.data_train plots(only)=(effect oddsratio);
+    class medf_ha(ref='N') medf_bp(ref='N') medf_can(ref="N") medf_diab(ref="N") medf_chol(ref="N") medf_arth(ref="N")/ param=ref;
+    model suspact(event='1')=medf_ha|medf_bp|medf_can|medf_diab|medf_chol|medf_arth / 
+          selection=backward clodds=pl slstay=0.10;
+run;
+
+proc logistic data=sumprac1.data_train plots(only)=(effect oddsratio);
+    class medf_gla(ref='N') medf_kid(ref='N') medf_leuk(ref="N") medf_ment(ref="N") medf_se(ref="N") medf_sca(ref="N")/ param=ref;
+    model suspact(event='1')=medf_gla|medf_kid|medf_leuk|medf_ment|medf_se|medf_sca / 
+          selection=backward clodds=pl slstay=0.10;
+run;
+
+proc logistic data=sumprac1.data_train plots(only)=(effect oddsratio);
+    class medf_str(ref='N') medf_td(ref='N') medf_tb(ref="N") medf_ul(ref="N") / param=ref;
+    model suspact(event='1')=medf_str|medf_td|medf_tb|medf_ul / 
+          selection=backward clodds=pl slstay=0.10;
+run;
+
+
+
+proc logistic data=sumprac1.data_train plots(only)=(effect oddsratio);
+    class medm_ha(ref='N') medm_bp(ref='N') medm_can(ref="N") medm_diab(ref="N") medm_chol(ref="N") medm_arth(ref="N")/ param=ref;
+    model suspact(event='1')=medm_ha|medm_bp|medm_can|medm_diab|medm_chol|medm_arth / 
+          selection=backward clodds=pl slstay=0.10;
+run;
+
+proc logistic data=sumprac1.data_train plots(only)=(effect oddsratio);
+    class medm_gla(ref='N') medm_kid(ref='N') medm_leuk(ref="N") medm_ment(ref="N") medm_se(ref="N") medm_sca(ref="N")/ param=ref;
+    model suspact(event='1')=medm_gla|medm_kid|medm_leuk|medm_ment|medm_se|medm_sca / 
+          selection=backward clodds=pl slstay=0.10;
+run;
+
+proc logistic data=sumprac1.data_train plots(only)=(effect oddsratio);
+    class medm_str(ref='N') medm_td(ref='N') medm_tb(ref="N") medm_ul(ref="N") / param=ref;
+    model suspact(event='1')=medm_str|medm_td|medm_tb|medm_ul / 
+          selection=backward clodds=pl slstay=0.10;
+run;
+
+
+
+proc logistic data=sumprac1.data_train plots(only)=(effect oddsratio);
+    class Med_Chol(ref='N') Med_HA(ref='N') Med_HA(ref='N') MedF_BP(ref='N') 
+	MedF_HA(ref='N') MedF_Diab(ref='N') MedF_HA(ref='N') MedF_HA(ref='N') 
+	MedF_Chol(ref='N') MedF_Str(ref='N') MedM_BP(ref='N') MedM_Can(ref='N') 
+	MedM_Can(ref='N') MedM_TD(ref='N') Med_Diab(ref='N') MedF_Arth(ref='N') 
+	MedM_Arth(ref='N') MedM_Ul(ref='N') / param=ref;
+
+    model suspact(event='1')=Med_Chol|Med_HA|Med_HA|MedF_BP|MedF_HA|MedF_Diab|MedF_HA|MedF_HA|
+	MedF_Chol|MedF_Str|MedM_BP|MedM_Can|MedM_Can|MedM_TD|Med_Diab|MedF_Arth|MedM_Arth|MedM_Ul
+	/ selection=backward clodds=pl slstay=0.10;
+run;

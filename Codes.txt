@@ -1,0 +1,174 @@
+select * from exercise01.records
+
+select id, capital_gain, capital_gain*0.10 as bonus from exercise01.records
+
+CREATE TABLE exercise01.temp AS SELECT * FROM exercise01.records;
+
+select distinct capital_gain from exercise01.records;
+
+select * from exercise01.records where capital_gain > 1000;
+
+
+SELECT capital_gain, capital_gain*0.50 as bonus from exercise01.records order by 1 desc;
+
+SELECT capital_gain as 'Capital Gain', capital_gain*0.50 as Bonus from exercise01.records order by 1 desc;
+
+SELECT capital_gain as 'Capital Gain', 'My Bonus is: ', capital_gain*0.50 as Bonus from exercise01.records order by 1 desc
+
+select capital_gain, capital_loss, capital_gain+capital_loss as total from exercise01.records;
+
+select age, sum(capital_gain) as total from exercise01.records group by age;
+
+select age, sum(capital_gain) as total
+from exercise01.records
+group by age
+having total > 90000;
+
+
+1. Cartesian product query:
+
+select * from exercise01.records, exercise01.races
+
+2. Inner join query:
+
+select * from summer_data.customer_info, summer_data.customer_transactions where customer_info.cust_id = customer_transactions.cust_id
+
+3. Inner join using table aliases:
+
+select * from summer_data.customer_info ci, summer_data.customer_transactions ct where ci.cust_id = ct.cust_id
+
+4. Inner join using alternative syntax:
+
+SELECT *
+FROM summer_data.customer_info as ci
+INNER JOIN 
+summer_data.customer_transactions ct
+ON ci.cust_id = ct.cust_id
+
+5. Left join query:
+
+select *
+FROM summer_data.customer_family_medical as cm
+LEFT JOIN 
+summer_data.customer_info as ci
+ON cm.cust_id = ci.cust_id
+
+6. Query using Coalesce function:
+
+select coalesce(cm.Cust_ID,ci.Cust_ID) as ID, City, State
+FROM summer_data.customer_family_medical as cm
+LEFT JOIN 
+summer_data.customer_info as ci
+ON cm.cust_id = ci.cust_id
+
+
+1. Subquery in the WHERE clause
+
+SELECT * from summer_data.customer_transactions where income > (select avg(income) from summer_data.customer_transactions where income is not '' ) and income is not ''
+
+2. Subquery in the HAVING clause
+
+select cov_id, avg(income) as avg from summer_data.customer_transactions group by 1 having avg > (select avg(income) from summer_data.customer_transactions where income is not '');
+
+3. Subquery using the IN operator in the WHERE clause
+
+select * from summer_data.customer_transactions where customer_transactions.cust_id in (select customer_info.cust_id from summer_data.customer_info where State = 'CA')
+
+4. Subquery in the FROM clause:
+
+select * from (select cust_id, cov_id, avg(income) as avg_inc from summer_data.customer_transactions where income is not '' group by 1, 2) as cov_avg, summer_data.customer_info as ci
+where ci.cust_id = cov_avg.cust_id
+
+
+1. UNION set operator:
+
+select ID, Name from training.train_a
+union
+select ID, Name from training.train_b 
+   where EDate is not ''
+
+2. UNION ALL set operator:
+
+select ID, Name from training.train_a
+union all
+select ID, Name from training.train_b 
+   where EDate is not ''
+
+3. Except Set operator:
+
+select ID, Name from training.train_a
+except
+select ID, Name from training.train_b
+   where EDate is not ''
+
+4. INTERSECT operator
+
+select ID, Name from training.train_a
+intersect 
+select ID, Name from training.train_b
+   where EDate is not ''
+
+5. Return any rows in the team table that are not in either train_a or train_b:
+
+select ID, Name from training.team
+except
+select ID, Name from training.train_a
+except
+select ID, Name from training.train_b
+
+
+1. Creating a table in SQLite:
+
+CREATE TABLE training.temp AS 
+SELECT id, name FROM training.train_a
+UNION
+SELECT id, name FROM training.train_b;
+
+2. Copy the table structure from an existing table:
+
+CREATE TABLE training.copied AS SELECT * FROM training.train_a WHERE 0;
+
+3. Define columns in the CREATE TABLE statement:
+
+CREATE TABLE training.employees
+( employee_id INTEGER,
+  last_name VARCHAR,
+  first_name VARCHAR,
+  hire_date DATE
+)
+
+4. Defining columns in the CREATE TABLE statement with primary key:
+
+CREATE TABLE training.employees2
+( employee_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  last_name VARCHAR NOT NULL,
+  first_name VARCHAR,
+  hire_date DATE
+)
+
+5. Create a temporary table to add data into:
+
+CREATE TABLE training.table_aux
+( id INTEGER,
+  name VARCHAR
+)
+
+6. INSERT INTO with VALUES Clause:
+
+INSERT INTO training.table_aux
+(id, name)
+VALUES
+(1,'Mary'),
+(2,'John')
+
+7.INSERT INTO with a query:
+
+INSERT INTO training.table_aux
+(id, name)
+SELECT id, name
+FROM training.train_a;
+
+8. We will NOT create Views in SQLiteStudio 
+
+
+

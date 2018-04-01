@@ -1,0 +1,41 @@
+library(xlsx)
+
+PriceProj <- read.xlsx('C:/Users/Sam Koshy/Desktop/MSA - Fall/502/Fall 3/Simulation & Risk/HW/2/Analysis_Data.xlsx', 1, startRow = 4)
+DrillingCost <- read.xlsx('C:/Users/Sam Koshy/Desktop/MSA - Fall/502/Fall 3/Simulation & Risk/HW/2/Analysis_Data.xlsx', 2, startRow = 4)
+# Drilling Costs from 1991-2006 - 16 obs each, 48 total
+cost <- DrillingCost[1:47, 5]
+library(graphics)
+library(ks)
+cost
+PriceProj
+hist(cost,breaks=47)
+#Simulation using kernel density estimator#
+new.density <- density(cost, bw='SJ-ste')
+new.density
+set.seed(9385)
+rate.value=matrix(exp(rkde(fhat=kde(cost, h=0.06627), n=11*100000)),nrow=11)
+co=4000.4*apply(rate.value,2,prod)
+#Cost of Drilling in 2018
+hist(co, breaks=5000, main=paste("Histogram of Average Geometric Return for 2018"),
+     xlab = 'Estimated Average Drilling Cost in Thousands of Dollars', ylab = 'Frequency')
+median(co)
+abline(v=median(co), col='red', lwd=2)
+mtext("Median = 11050.81", at=11050.81, col="red")
+
+#Barrels
+library("triangle")
+Barrels= matrix(rltriangle(n=23*100000, a=3285, b=5475, c=4015),nrow=23)
+
+#Price
+Price=matrix(rltriangle(n=23*100000, a=PriceProj[,3], b=PriceProj[,2], c=PriceProj[,4]),nrow=23)
+
+Revenue=Barrels*Price
+TotRev= apply(Revenue,2,sum)
+
+#NPV
+NPV=TotRev-co
+hist(NPV, breaks=10000, main=paste("Histogram of Net Present Value of a single oil well"),
+     xlab = 'Estimated NPV Thousands of Dollars', ylab = 'Frequency')
+median(NPV)
+abline(v=median(NPV), col='red', lwd=2)
+mtext("Median = $10,010,555", at=10010555, col="red")

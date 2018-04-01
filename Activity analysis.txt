@@ -1,0 +1,42 @@
+proc sort data=sumprac.customer_transactions out=CT; by cust_id cov_id date; run;
+
+data CTclaim;
+	set CT;
+	where transaction="CL";
+	claim=1; year1=year(date); uid=cov_id||year;
+run;
+proc sort data=ctclaim; by cov_id; run;
+data CTchange1 (keep=cov_id year uid);
+	set CT;
+	where transaction in ("IN" "CH");
+	year=year(date);
+	uid=cov_id||year;
+run;
+
+Proc SQL;
+create table ctchange2 as
+select distinct uid, cov_id, year, count(uid) as count
+from ctchange1
+group by uid
+;
+quit;
+proc sort data=ctchange2; by cov_id; run;
+data DM;
+	merge ctchange2 ctclaim;
+	by cov_id;
+run;
+
+data dm1;
+	set dm;
+	if year1=year then claim1=1;
+	if year1=year+1 then claim1=1;
+	else claim1=0;
+	if count>7 then count1="H";
+	else count1=count;
+run;
+
+proc logistic data=dm1 alpha=0.2 plots(only)=(effect oddsratio);
+	class count1(ref='1') / param=ref;
+    model claim1(event='1')=count1 / clodds=pl;
+run;
+

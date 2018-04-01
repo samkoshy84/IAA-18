@@ -1,0 +1,42 @@
+data sum.T_IN sum.W_IN sum.V_IN;
+	set summer.customer_transactions;
+	where transaction = "CL";
+	if type = "T" then output sum.T_IN;
+	else if type = "W" then output sum.W_IN;
+	else if type = "V" then output sum.V_IN;
+run;
+data sum.T_IN (rename=(date=datet));
+set sum.t_IN;
+run;
+data sum.W_IN (rename=(date=datew));
+set sum.w_IN;
+run;
+data sum.v_IN (rename=(date=datev));
+set sum.v_IN;
+run;
+proc sort data=sum.T_IN; by cust_id; run;
+proc sort data=sum.W_IN; by cust_id; run;
+proc sort data=sum.V_IN; by cust_id; run;
+data sum.Claim90;
+	merge sum.T_IN (in=t) sum.W_IN (in=w) sum.V_IN (in=v);
+	by cust_id;
+	if t+w+v>1 then output sum.claim90;
+	
+run;
+
+data claim90;
+set sum.Claim90;
+date1=dateT-dateW;date2=dateT-dateV;date3=dateW-dateV;
+if date1<0 then date1=-date1;
+if date2<0 then date2=-date2;
+if date3<0 then date3=-date3;
+run;
+	
+data claim90F;
+set claim90;
+if date1>90 or date2>90 or date3>90 then claimover90=1;
+else claimover90=0;
+run;
+proc sort data=claim90F; by claimover90; run;
+proc means data=claim90F; var claimover90; run;
+

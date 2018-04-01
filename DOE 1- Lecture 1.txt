@@ -1,0 +1,111 @@
+***POWER AND SAMPLE SIZE ANALYSIS FOR ONE SAMPLE T-TEST***;
+
+*LIGHTBULBS EXAMPLE*;
+
+PROC POWER;
+	ONESAMPLEMEANS TEST=t
+	NULLMEAN=850
+	MEAN=810
+	STDDEV=50
+	ALPHA=0.05
+	POWER=0.9
+	NTOTAL=.;
+	PLOT Y=power min=0 max=1 yopts = (ref=0.90 crossref=yes);
+RUN;
+
+/*SAMPLE SIZE is 10, what is the POWER?*/
+
+PROC POWER;
+	ONESAMPLEMEANS TEST=t
+	NULLMEAN=850
+	MEAN=810
+	STDDEV=50
+	ALPHA=0.05
+	POWER=.
+	NTOTAL=10;
+RUN;
+
+/*POWER FOR VARYING SAMPLE SIZE of 15-45*/
+
+PROC POWER;
+	ONESAMPLEMEANS TEST=t
+	NULLMEAN=850
+	MEAN=810
+	STDDEV=50
+	ALPHA=0.05
+	POWER=.
+	NTOTAL=15 to 45 by 5;
+RUN;
+
+/*VARYING STANDARD DEVIATION*/
+
+ODS HTML STYLE=HTMLBLUECML;/*Use this ODS style for different symbols in the plot*/
+PROC POWER;
+	ONESAMPLEMEANS TEST=t
+	NULLMEAN=850
+	MEAN=810
+	STDDEV=30 to 100 by 10
+	ALPHA=0.05
+	POWER=.90
+	NTOTAL=.;
+	PLOT Y=power min=0 max=1 yopts = (ref=0.90 crossref=yes)
+			vary (symbol);
+RUN;
+
+/*What if the ALPHA varies*/
+
+ODS HTML STYLE=HTMLBLUECML;/*Use this ODS style for different symbols in the plot*/
+PROC POWER;
+	ONESAMPLEMEANS TEST=t
+	NULLMEAN=850
+	MEAN=810
+	STDDEV=50
+	ALPHA=0.10 0.05 0.01
+	POWER=.90
+	NTOTAL=.;
+	PLOT Y=power min=0 max=1 yopts = (ref=0.90 crossref=yes)
+			vary (symbol);
+RUN;
+
+/*What really matters is the difference in means or the effect size and not 
+really the true value of the means*/
+
+PROC POWER;
+	ONESAMPLEMEANS TEST=t
+	NULLMEAN=50
+	MEAN=10
+	STDDEV=50
+	ALPHA=00.05
+	POWER=.90
+	NTOTAL=.;
+RUN;
+
+****************************************************
+***POWER AND SAMPLE SIZE ANALYSES FOR TWO-SAMPLE t-TEST***;
+
+*CONCRETE EXAMPLE*;
+
+PROC POWER;
+	TWOSAMPLEMEANS test=diff
+		sides=2
+		meandiff=400 to 500 by 50
+		stddev=300 400 /*Assume Equal Variance*/
+		groupweights= 1|1 to 3 by 1
+		power=0.90
+		alpha=0.05
+		ntotal=.;
+RUN;
+
+ODS HTML STYLE=HTMLBLUECML;/*Use this ODS style for different symbols in the plot*/
+PROC POWER;
+	TWOSAMPLEMEANS test=diff_satt /*Satterthwaite unpooled t-test*/
+		nfractional /*enables fractional input and output for sample sizes*/
+		sides=2
+		meandiff=400 to 500 by 50
+		groupstddevs=300|350 /*Assume Unequal Variance*/
+		power=0.90
+		alpha=0.05
+		npergroup=.;
+	PLOT Y=power min=0 max=1 yopts = (ref=0.90 crossref=yes)
+			vary (symbol);
+RUN; 

@@ -1,0 +1,134 @@
+﻿***/THE POWER PROCEDURE (POWER AND SAMPLE SIZE)/***;
+
+
+***POWER AND SAMPLE SIZE ANALYSES FOR TWO INDEPENDENT PROPORTIONS***;
+
+/*CREDIT CARD OFFER*/
+PROC POWER;
+	TWOSAMPLEFREQ TEST=PCHI
+		refproportion=.01
+		proportiondiff=.001
+		sides=1 2
+		alpha=.05
+		power=.8
+		NTOTAL=.;
+RUN;
+
+ODS HTML STYLE=HTMLBLUECML;
+PROC POWER;
+	TWOSAMPLEFREQ TEST=PCHI
+		refproportion=0.01
+		proportiondiff=0.001
+		sides=1
+		alpha=0.05
+		power=0.6 0.8 0.99
+		groupweights= (1 1) (10 15) (1 2)
+						(1 3) (1 10)
+		NTOTAL=.;
+	PLOT Y=POWER YOPTS=(REF=0.8 CROSSREF=YES)
+		VARY(SYMBOL BY GROUPWEIGHTS);
+RUN;
+
+******Design of Experiments: Multiple Factor Analysis******;
+****PROC GLMPOWER****;
+
+
+/*Example 1. Credit Card introductory and goto rate */;
+
+/*Unbalanced sample size*/
+DATA work.a;
+	INPUT intro $1-4
+		  goto $6-9
+		  responserate
+		  size; /*unbalanced sample sizes*/
+	DATALINES;
+LOW  LOW 	0.0135	10 
+LOW  HIGH	0.0125	1	
+HIGH LOW	0.0110	1	
+HIGH HIGH	0.010	10
+;
+RUN;
+
+PROC GLMPOWER DATA=WORK.a;
+	CLASS intro goto;
+	MODEL responserate=intro|goto;
+	WEIGHT size;
+	POWER
+		POWER=0.80
+		NTOTAL=.
+		STDDEV=%SYSFUNC(SQRT(0.01*0.99));
+RUN;
+
+/*Balanced sample sizes*/;
+
+DATA work.b;
+	INPUT intro $1-4
+		  goto $6-9
+		  responserate; /*balanced sample sizes*/
+	DATALINES;
+LOW  LOW 	0.0135
+LOW  HIGH	0.0125
+HIGH LOW	0.011
+HIGH HIGH	0.010
+;
+RUN;
+
+PROC GLMPOWER DATA=WORK.b;
+	CLASS intro goto;
+	MODEL responserate=intro|goto;
+	POWER
+		POWER=0.80
+		NTOTAL=.
+		STDDEV=%SYSFUNC(SQRT(0.01*0.99));
+RUN;
+
+/*Departure from Design Balance and Orthogonality*/;
+
+DATA work.c;
+	INPUT intro $1-4
+		  goto $6-9
+		  responserate; /*balanced sample sizes*/
+	DATALINES;
+LOW  LOW 	0.0135
+LOW  HIGH	0.0125
+HIGH LOW	0.011
+;
+RUN;
+
+PROC GLMPOWER DATA=WORK.c;
+	CLASS intro goto;
+	MODEL responserate=intro|goto;
+	POWER
+		POWER=0.80
+		NTOTAL=.
+		STDDEV=%SYSFUNC(SQRT(0.01*0.99));
+RUN;
+
+/*Three factors: Adding a factor, Size of envelope*/
+DATA work.d;
+	INPUT intro $1-4
+		  goto $6-9
+		  size $11-15
+		  responserate; /*balanced sample sizes*/
+	DATALINES;
+LOW  LOW  SMALL	0.0085
+LOW  LOW  LARGE	0.0095
+LOW  HIGH SMALL	0.0095
+LOW  HIGH LARGE	0.0105
+HIGH LOW  SMALL	0.0095
+HIGH LOW  LARGE	0.0105
+HIGH HIGH SMALL	0.0105
+HIGH HIGH LARGE	0.0115
+;
+RUN;
+PROC PRINT Data=work.d;
+RUN; 
+
+PROC GLMPOWER Data=work.d;
+	CLASS intro goto size;
+	MODEL responserate=intro|goto|size;
+	POWER
+		power=0.80
+		stddev=%sysfunc(sqrt(0.01*0.99))
+		NTOTAL=.;
+RUN;

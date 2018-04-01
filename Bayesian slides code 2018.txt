@@ -1,0 +1,103 @@
+model <- function() { 
+# Prior 
+p ~ dunif(0,1)  
+# Data   
+y ~ dbin(p, N) }
+model.file<-file.path(tempdir(),"model.txt") 
+write.model(model, model.file)
+N<-87
+y<-25
+data <- list("N", "y")
+params <- c("p")
+inits <- function() { list(p=0.5) }
+out <- bugs(data, inits, params, model.file,codaPkg=TRUE, n.iter=10000)
+out.coda <- read.bugs(out)
+library(coda)
+xyplot(out.coda)
+gelman.plot(out.coda)  ###want all values less than 1.05
+acfplot(out.coda)  ### would like to be close to 0
+####changing burnin period
+out <- bugs(data, inits, params, codaPkg=TRUE, model.file,   n.iter=10000,n.burnin=1000)
+out.coda <- read.bugs(out)
+xyplot(out.coda)
+densityplot(out.coda)
+
+post.samples=as.matrix(out.coda)  ###first column is deviance, second column is statistic
+hist(post.samples[,2])
+mean(post.samples[,2])
+quantile(post.samples[,2],c(0.025,0.975))
+
+#######Now just playing around...showing how prior and data distributions impact posterior
+
+####Uniformative prior
+y<-10
+N<-50
+model <- function() { 
+# Prior 
+p ~ dunif(0,1)  
+# Data   
+y ~ dbin(p, N) }
+model.file<-file.path(tempdir(),"model.txt") 
+write.model(model, model.file)
+data <- list("N", "y")
+params <- c("p")
+inits <- function() { list(p=0.5) }
+out <- bugs(data, inits, params, model.file,codaPkg=TRUE, n.iter=10000)
+out.coda<-read.bugs(out)
+densityplot(out.coda)
+
+###Informative prior
+model <- function() { 
+# Prior 
+p ~ dbeta(20,2)  
+# Data   
+y ~ dbin(p, N) }
+model.file<-file.path(tempdir(),"model.txt") 
+write.model(model, model.file)
+data <- list("N", "y")
+params <- c("p")
+inits <- function() { list(p=0.5) }
+out <- bugs(data, inits, params, model.file,codaPkg=TRUE, n.iter=10000)
+out.coda<-read.bugs(out)
+densityplot(out.coda)
+
+#####################################################Regression problem....
+
+linemodel <- function() { 
+for (j in 1:N) {
+Y[j] ~ dnorm(mu[j], tau) 
+## Response values Y are Normally distributed 
+mu[j] <- alpha + beta * (x[j] - xbar) 
+## linear model with x values centered 
+} 
+## Priors 
+alpha ~ dnorm(0, 0.001) 
+beta ~ dnorm(0, 0.001) 
+tau ~ dgamma(0.001, 0.001) 
+sigma <- 1/sqrt(tau) }
+linemodel.file<-file.path(tempdir(),"linemodel.txt") 
+write.model(linemodel, linemodel.file)
+Y<- c(1, 3, 3, 3, 5)
+x <- c(1, 2, 3, 4, 5)
+N <- 5
+xbar <- 3
+lineparam<-c('alpha','beta','sigma')
+linedata <- list('Y','x','N', 'xbar')
+lineinits <- function() {list(alpha = 1, beta = 1, tau = 1) }
+lineout <- bugs(linedata, lineinits, lineparam, linemodel.file, codaPkg=TRUE,n.iter = 10000)
+
+out.coda <- read.bugs(lineout)
+xyplot(out.coda)
+densityplot(out.coda)
+post.samp=as.matrix(out.coda)
+> apply(post.samp,2,mean)
+     alpha       beta   deviance      sigma 
+ 2.9983432  0.8014821 12.8805611  1.0008056 
+
+> apply(post.samp,2,sd)
+    alpha      beta  deviance     sigma 
+0.5337833 0.3696025 3.5605945 0.6524821 
+
+###Not the best of data....
+
+plot(x,Y)

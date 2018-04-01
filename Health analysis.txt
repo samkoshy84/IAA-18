@@ -1,0 +1,50 @@
+data sum.cmct_T sum.cmct_W sum.cmct_V;
+	set sum.cm_ct_merged_sorted;
+	if type="T" then output sum.cmct_T;
+	else if type="W" then output sum.cmct_W;
+	else if type="V" then output sum.cmct_V;
+run;
+
+proc sort data=sum.cfm_ci_merged out=sum.cfm_ci_merged_sorted;
+	by cust_id;
+run;
+data sum.cmct_H;
+	merge sum.cm_ct_merged_sorted (in=M) sum.cfm_ci_merged_sorted (in=S);
+	by cust_id; 
+	if reward_R < 300  then Health_D=0;
+	else if reward_R < 500 then Health_D=1;
+	else health_D=0;
+	if M=1 and S=1 then output sum.cmct_H;
+run;
+
+data sum.cmct_HC sum.cmct_HR;
+	set sum.cmct_H;
+	if transaction="CL" then output sum.cmct_HC;
+	else if transaction="RE" then output sum.cmct_HR;
+run;
+data cmct_HR;
+set sum.cmct_HR (keep=cov_id health_D);
+run;
+proc sort data=cmct_hr; by cov_id; run;
+proc sort data=sum.cmct_hc; by cov_id; run;
+data sum.cmct_HM;
+	merge sum.cmct_HC (in=hc) cmct_HR (in=hr);by cov_id;
+	if hc=1 and hr=1 then output sum.cmct_hm;
+run;
+
+data sum.cmct_T1;
+	merge sum.cmct_T (in=T) sum.cfm_ci_merged_sorted (in=S);
+	by cust_id; 
+	if T=1 and S=1 then output sum.cmct_T1;
+run;
+data sum.cmct_W1;
+	merge sum.cmct_W (in=W) sum.cfm_ci_merged_sorted (in=S);
+	by cust_id; 
+	if W=1 and S=1 then output sum.cmct_W1;
+run;
+data sum.cmct_V1;
+	merge sum.cmct_V (in=V) sum.cfm_ci_merged_sorted (in=S);
+	by cust_id; 
+	if V=1 and S=1 then output sum.cmct_V1;
+run;
+

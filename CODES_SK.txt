@@ -1,0 +1,88 @@
+*Summer Practicum Codes;
+
+
+*SORTING;
+
+proc sort data = sumprac.customer_transactions out = CT_sorted;
+	by cust_id cov_id date;
+run;
+
+proc sort data = sumprac.customer_medical out = CM_sorted;
+	by cust_id cov_id date;
+run;
+
+
+*CREATING UID;
+
+data CM_sorted;
+	set CM_sorted;
+	UID=cov_id||date;
+run;
+
+data CT_sorted;
+	set CT_sorted;
+	UID=cov_id||date;
+run;
+
+*COMPARING;
+
+proc compare base = CM_sorted 
+			 compare = CT_sorted;
+	var UID;
+	with UID;
+run;
+
+
+*CREATING UNIQUE and DUPLICATES DATASET;
+
+proc sort data=CM_sorted nouniquekeys uniqueout=unique_CM out=duplicates_CM; 
+	by uid; 
+run;
+
+proc sort data=CT_sorted nouniquekeys uniqueout=unique_CT out=duplicates_CT; 
+	by uid; 
+run;
+
+
+*SUBSETTING CLAIMS TRANACTION DATA;
+
+DATA CT_claims;
+    SET sumprac1.ct_sorted;
+    IF (upcase(transaction)="CL") THEN OUTPUT;
+RUN;
+
+
+proc sort data = sumprac.adjuster_technician out=sumprac1.AT_sorted;
+	by cov_id;
+run;
+
+
+DATA sumprac1.technician;
+    SET sumprac1.at_sorted;
+    where upcase(claim_info) like "T%";
+RUN;
+
+
+data sumprac1.ct_at_merged;
+	merge ct_claims sumprac1.adjuster (rename=(claim_info=adjuster_code)) sumprac1.technician (rename=(claim_info=technician_code));
+	by cov_id;
+run;
+
+
+proc sort data = sumprac.customer_info out=sumprac1.ci_sorted;
+	by cust_id;
+run;
+
+
+proc compare base = sumprac1.cfm_sorted
+			 compare = sumprac1.ci_sorted;
+	var cust_id;
+	with cust_id;
+run;
+
+
+
+data sumprac1.cfm_ci_merged;
+	merge sumprac1.cfm_sorted sumprac1.ci_sorted;
+	by cust_id;
+run;

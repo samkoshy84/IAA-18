@@ -1,0 +1,1 @@
+%let path = C:\Users\Sam Koshy\Downloads\MSA\SAS PR 1\PRG1_Data;

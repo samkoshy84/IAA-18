@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?><_ROOT_ EMVERSION="14.2" ORIENTATION="HORIZONTAL">
+<Workspace>
+<NODES>
+<NODE CLASS="SASHELP.EMCORE.EXTENSION.CLASS" COMPONENT="IGN" ID="IGN" X="425" Y="267" DESCRIPTION="Interactive Grouping" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="CREDSCORE" TOOLPREFIX="IGN">
+<PROPERTIES Location="CATALOG" Catalog="SASHELP.EMCREDIT.IGN.SOURCE" ApplyLevelRule="N" BinMethod="QUANTILE" NumBins="20" UseCodes="N" Freeze="N" ImportWoe="NONE" WoeAdjust="Y" AdjustFactor="0.5" ApplyMinDist="Y" MinDistMethod="PERCENT" MinPercentDist="5" MinCountDist="." Criterion="ENTROPY" MissingValue="SEPARATEIFANY" MinCatSize="5" NodeSample="." MaxBranch="5" Precision="2" GroupInt="OPTIMAL" GroupOrd="OPTIMAL" CreateGrouping="N" CreateMethod="OVERWRITE" ImportGrouping="N" VarSelMethod="INFOVAL" GiniCutoff="20" InfoValCutoff="0.1" GrpMsmnt="ORDINAL" MaxVar="10" ApplyMonotonicity="Y" ApplyMinNumNonEvent="Y" ApplyMinNumEvent="Y" ApplyMaxBinTotal="Y" ApplyMinBinDiff="Y" ApplyMinNumBins="Y" MinNumNonEvent="1" MinNumEvent="1" MaxBinTotal="23250" MinBinDiff="0.01" MinNumBins="2" INTTARGETMETHOD="DUPFREQ" TARGETBOUNDS="N" USERMIN="0" USERMAX="1" ALLOWOOB="N" USERCUTVALUE="0.20" RandomSeed="12345" ForceRun="N" RunAction="Train" Component="IGN" CodesData="" ImportData="" DataNeeded="Y" ApplyMaxBinWidth="N" MaxBinWidth="." ApplyMinBinWidth="N" MinBinWidth=".">
+<VariableProperties/>
+<EmTargetAttributes/>
+<EmFileProperties>
+<USERTRAINCODE Type="EXTERNAL" Extension="sas">
+<Data/>
+</USERTRAINCODE>
+<EMNOTES Type="EXTERNAL" Extension="txt">
+<Data/>
+</EMNOTES>
+</EmFileProperties>
+</PROPERTIES>
+</NODE>
+<NODE CLASS="SASHELP.EMCORE.EXTENSION.CLASS" COMPONENT="IGN" ID="IGN2" X="1127" Y="364" DESCRIPTION="Interactive Grouping (2)" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="CREDSCORE" TOOLPREFIX="IGN">
+<PROPERTIES Location="CATALOG" Catalog="SASHELP.EMCREDIT.IGN.SOURCE" ApplyLevelRule="N" BinMethod="QUANTILE" NumBins="20" UseCodes="N" Freeze="N" ImportWoe="NONE" WoeAdjust="Y" AdjustFactor="0.5" ApplyMinDist="Y" MinDistMethod="PERCENT" MinPercentDist="5" MinCountDist="." Criterion="ENTROPY" MissingValue="SEPARATEIFANY" MinCatSize="5" NodeSample="." MaxBranch="5" Precision="2" GroupInt="OPTIMAL" GroupOrd="OPTIMAL" CreateGrouping="N" CreateMethod="OVERWRITE" ImportGrouping="N" VarSelMethod="INFOVAL" GiniCutoff="20" InfoValCutoff="0.1" GrpMsmnt="ORDINAL" MaxVar="10" ApplyMonotonicity="Y" ApplyMinNumNonEvent="Y" ApplyMinNumEvent="Y" ApplyMaxBinTotal="Y" ApplyMinBinDiff="Y" ApplyMinNumBins="Y" MinNumNonEvent="1" MinNumEvent="1" MaxBinTotal="23250" MinBinDiff="0.01" MinNumBins="2" INTTARGETMETHOD="DUPFREQ" TARGETBOUNDS="N" USERMIN="0" USERMAX="1" ALLOWOOB="N" USERCUTVALUE="0.20" RandomSeed="12345" ForceRun="N" RunAction="Train" Component="IGN" CodesData="" ImportData="" DataNeeded="Y" ApplyMaxBinWidth="N" MaxBinWidth="." ApplyMinBinWidth="N" MinBinWidth=".">
+<VariableProperties/>
+<EmTargetAttributes/>
+<EmFileProperties>
+<USERTRAINCODE Type="EXTERNAL" Extension="sas">
+<Data/>
+</USERTRAINCODE>
+<EMNOTES Type="EXTERNAL" Extension="txt">
+<Data/>
+</EMNOTES>
+</EmFileProperties>
+</PROPERTIES>
+</NODE>
+<NODE CLASS="SASHELP.EMSAMP.IDS.CLASS" COMPONENT="DataSource" ID="Ids" X="70" Y="195" DESCRIPTION="ACCEPTED_CUSTOMERS" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="SAMPLE" TOOLPREFIX="Ids">
+<PROPERTIES DataSource="acceptedcustomers" Scope="LOCAL" Role="RAW" Library="FIN_HW" Table="ACCEPTED_CUSTOMERS" NCols="26" NObs="3000" NBytes="1033216" Segment="" DataSourceRole="RAW" OutputType="VIEW" ForceRun="N" ComputeStatistics="N" DataSelection="DATASOURCE" NewTable="" MetaAdvisor="BASIC" ApplyIntervalLevelLowerLimit="Y" IntervalLowerLimit="20" ApplyMaxPercentMissing="Y" MaxPercentMissing="50" ApplyMaxClassLevels="Y" MaxClassLevels="20" IdentifyEmptyColumns="Y" VariableValidation="STRICT" NewVariableRole="REJECT" DropMapVariables="Y" DsId="acceptedcustomers" DsSampleName="" DsSampleSizeType="" DsSampleSize="" DsCreatedBy="Adam Crouch" DsCreateDate="1832794984.2" DsModifiedBy="Adam Crouch" DsModifyDate="1832794984.2" DsScope="LOCAL" Sample="D" SampleSizeType="PERCENT" SampleSizePercent="20" SampleSizeObs="10000" DBPassThrough="Y" RunAction="Train" Component="DataSource" Description="">
+<VariableProperties/>
+<EmVariableAttributes>
+<DELTA Variable="BUREAU" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
+<DELTA Variable="DIV" AttributeName="LEVEL" AttributeValue="BINARY"/>
+<DELTA Variable="EC_CARD" AttributeName="LEVEL" AttributeValue="BINARY"/>
+<DELTA Variable="FINLOAN" AttributeName="LEVEL" AttributeValue="BINARY"/>
+<DELTA Variable="GB" AttributeName="ROLE" AttributeValue="TARGET"/>
+<DELTA Variable="GB" AttributeName="LEVEL" AttributeValue="BINARY"/>
+<DELTA Variable="LOCATION" AttributeName="LEVEL" AttributeValue="BINARY"/>
+<DELTA Variable="REGN" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
+<DELTA Variable="RESID" AttributeName="LEVEL" AttributeValue="BINARY"/>
+<DELTA Variable="TEL" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
+<DELTA Variable="TITLE" AttributeName="LEVEL" AttributeValue="BINARY"/>
+<DELTA Variable="_freq_" AttributeName="ROLE" AttributeValue="FREQ"/>
+<DELTA Variable="_freq_" AttributeName="LEVEL" AttributeValue="BINARY"/>
+</EmVariableAttributes>
+<EmTargetAttributes/>
+<EmFileProperties>
+<EMNOTES Type="EXTERNAL" Extension="txt">
+<Data/>
+</EMNOTES>
+</EmFileProperties>
+</PROPERTIES>
+</NODE>
+<NODE CLASS="SASHELP.EMSAMP.IDS.CLASS" COMPONENT="DataSource" ID="Ids2" X="620" Y="169" DESCRIPTION="REJECTED_CUSTOMERS" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="SAMPLE" TOOLPREFIX="Ids">
+<PROPERTIES DataSource="rejectedcustomers" Scope="LOCAL" Role="SCORE" Library="FIN_HW" Table="REJECTED_CUSTOMERS" NCols="26" NObs="1500" NBytes="525312" Segment="" DataSourceRole="RAW" OutputType="VIEW" ForceRun="N" ComputeStatistics="N" DataSelection="DATASOURCE" NewTable="" MetaAdvisor="BASIC" ApplyIntervalLevelLowerLimit="Y" IntervalLowerLimit="20" ApplyMaxPercentMissing="Y" MaxPercentMissing="50" ApplyMaxClassLevels="Y" MaxClassLevels="20" IdentifyEmptyColumns="Y" VariableValidation="STRICT" NewVariableRole="REJECT" DropMapVariables="Y" DsId="rejectedcustomers" DsSampleName="" DsSampleSizeType="" DsSampleSize="" DsCreatedBy="Adam Crouch" DsCreateDate="1832795038.5" DsModifiedBy="Adam Crouch" DsModifyDate="1832795038.5" DsScope="LOCAL" Sample="D" SampleSizeType="PERCENT" SampleSizePercent="20" SampleSizeObs="10000" DBPassThrough="Y" RunAction="Train" Component="DataSource" Description="">
+<VariableProperties/>
+<EmVariableAttributes>
+<DELTA Variable="BUREAU" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
+<DELTA Variable="DIV" AttributeName="LEVEL" AttributeValue="BINARY"/>
+<DELTA Variable="EC_CARD" AttributeName="LEVEL" AttributeValue="BINARY"/>
+<DELTA Variable="FINLOAN" AttributeName="LEVEL" AttributeValue="BINARY"/>
+<DELTA Variable="LOCATION" AttributeName="LEVEL" AttributeValue="BINARY"/>
+<DELTA Variable="REGN" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
+<DELTA Variable="RESID" AttributeName="LEVEL" AttributeValue="BINARY"/>
+<DELTA Variable="TEL" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
+<DELTA Variable="TITLE" AttributeName="LEVEL" AttributeValue="BINARY"/>
+</EmVariableAttributes>
+<EmTargetAttributes/>
+<EmFileProperties>
+<EMNOTES Type="EXTERNAL" Extension="txt">
+<Data/>
+</EMNOTES>
+</EmFileProperties>
+</PROPERTIES>
+</NODE>
+<NODE CLASS="SASHELP.EMSAMP.EMDPART.CLASS" COMPONENT="Partition" ID="Part" X="241" Y="266" DESCRIPTION="Data Partition" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="SAMPLE" TOOLPREFIX="Part">
+<PROPERTIES Method="DEFAULT" TrainPct="70" ValidatePct="30" TestPct="0" RandomSeed="12345" OutputType="DATA" IntervalDistribution="Y" ClassDistribution="Y" ForceRun="N" RunAction="Train" Component="Partition">
+<VariableProperties/>
+<EmTargetAttributes/>
+<EmFileProperties>
+<EMNOTES Type="EXTERNAL" Extension="txt">
+<Data/>
+</EMNOTES>
+</EmFileProperties>
+</PROPERTIES>
+</NODE>
+<NODE CLASS="SASHELP.EMSAMP.EMDPART.CLASS" COMPONENT="Partition" ID="Part2" X="997" Y="266" DESCRIPTION="Data Partition (2)" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="SAMPLE" TOOLPREFIX="Part">
+<PROPERTIES Method="DEFAULT" TrainPct="70" ValidatePct="30" TestPct="0" RandomSeed="12345" OutputType="DATA" IntervalDistribution="Y" ClassDistribution="Y" ForceRun="N" RunAction="Train" Component="Partition">
+<VariableProperties/>
+<EmTargetAttributes/>
+<EmFileProperties>
+<EMNOTES Type="EXTERNAL" Extension="txt">
+<Data/>
+</EMNOTES>
+</EmFileProperties>
+</PROPERTIES>
+</NODE>
+<NODE CLASS="SASHELP.EMCORE.EXTENSION.CLASS" COMPONENT="RejectInference" ID="RejInf" X="811" Y="265" DESCRIPTION="RejInf" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="CREDSCORE" TOOLPREFIX="RejInf">
+<PROPERTIES Location="CATALOG" Catalog="SASHELP.EMCREDIT.REJECTINFERENCE.SOURCE" DataNeeded="Y" RejectRate="0.3" RateIncrease="1" CutOffScore="200" MinScore="0" MaxScore="250" RandomSeed="12345" NumScoreBuckets="25" InferenceMethod="FUZZY" ScoreRangeMethod="ACCEPTS" ForceRun="N" RunAction="Train" Component="RejectInference">
+<VariableProperties/>
+<EmTargetAttributes/>
+<EmFileProperties>
+<USERTRAINCODE Type="EXTERNAL" Extension="sas">
+<Data/>
+</USERTRAINCODE>
+<EMNOTES Type="EXTERNAL" Extension="txt">
+<Data/>
+</EMNOTES>
+</EmFileProperties>
+</PROPERTIES>
+</NODE>
+<NODE CLASS="SASHELP.EMCORE.EXTENSION.CLASS" COMPONENT="RejectInference" ID="RejInf2" X="805" Y="195" DESCRIPTION="RejInf (Hard cutoff)" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="CREDSCORE" TOOLPREFIX="RejInf">
+<PROPERTIES Location="CATALOG" Catalog="SASHELP.EMCREDIT.REJECTINFERENCE.SOURCE" DataNeeded="Y" RejectRate="0.3" RateIncrease="1" CutOffScore="400" MinScore="0" MaxScore="250" RandomSeed="12345" NumScoreBuckets="25" InferenceMethod="HARDCUTOFF" ScoreRangeMethod="ACCEPTS" ForceRun="N" RunAction="Train" Component="RejectInference">
+<VariableProperties/>
+<EmTargetAttributes/>
+<EmFileProperties>
+<USERTRAINCODE Type="EXTERNAL" Extension="sas">
+<Data/>
+</USERTRAINCODE>
+<EMNOTES Type="EXTERNAL" Extension="txt">
+<Data/>
+</EMNOTES>
+</EmFileProperties>
+</PROPERTIES>
+</NODE>
+<NODE CLASS="SASHELP.EMCORE.EXTENSION.CLASS" COMPONENT="RejectInference" ID="RejInf3" X="809" Y="119" DESCRIPTION="RefInf (Parcel)" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="CREDSCORE" TOOLPREFIX="RejInf">
+<PROPERTIES Location="CATALOG" Catalog="SASHELP.EMCREDIT.REJECTINFERENCE.SOURCE" DataNeeded="Y" RejectRate="0.3" RateIncrease="1" CutOffScore="200" MinScore="401" MaxScore="450" RandomSeed="12345" NumScoreBuckets="25" InferenceMethod="PARCELLING" ScoreRangeMethod="ACCEPTS" ForceRun="N" RunAction="Train" Component="RejectInference">
+<VariableProperties/>
+<EmTargetAttributes/>
+<EmFileProperties>
+<USERTRAINCODE Type="EXTERNAL" Extension="sas">
+<Data/>
+</USERTRAINCODE>
+<EMNOTES Type="EXTERNAL" Extension="txt">
+<Data/>
+</EMNOTES>
+</EmFileProperties>
+</PROPERTIES>
+</NODE>
+<NODE CLASS="SASHELP.EMCREDIT.SCORECARD.CLASS" COMPONENT="Scorecard" ID="Scorecard" X="620" Y="265" DESCRIPTION="Scorecard" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="MODEL" TOOLPREFIX="Scorecard">
+<PROPERTIES freeze="NONE" generateIntercept="N" reverseScore="N" useIndet="N" odds="20" scorecardPoints="500" pointsToDoubleOdds="50" scorecardType="SUMMARY" noInfo="NEUTRAL" reportAdverse="N" numAdverse="3" numberOfBuckets="25" bucketMethod="MINMAX" revenueAcceptedGood="2000" costAcceptedBad="52000" currentApprovalRate="75" badRate="3.23" precision="0" generateCharacteristicAnalysis="N" displayNoInfo="N" ModelSelection="NONE" SelectionCriterion="DEFAULT" SelectionDefault="Y" SlEntry="0.05" SlStay="0.05" Start="0" Stop="0" Force="0" Hierarchy="CLASS" Rule="NONE" MaxStep="." analysisVariables="WOE" scoreOutvars="COMPLETE" ForceRun="N" RunAction="Train" Component="Scorecard" Sequential="N">
+<VariableProperties/>
+<EmTargetAttributes/>
+<EmFileProperties>
+<EMNOTES Type="EXTERNAL" Extension="txt">
+<Data/>
+</EMNOTES>
+</EmFileProperties>
+</PROPERTIES>
+</NODE>
+<NODE CLASS="SASHELP.EMCREDIT.SCORECARD.CLASS" COMPONENT="Scorecard" ID="Scorecard2" X="1221" Y="475" DESCRIPTION="Final Scorecard" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="MODEL" TOOLPREFIX="Scorecard">
+<PROPERTIES freeze="NONE" generateIntercept="N" reverseScore="N" useIndet="N" odds="20" scorecardPoints="500" pointsToDoubleOdds="50" scorecardType="DETAILED" noInfo="NEUTRAL" reportAdverse="N" numAdverse="3" numberOfBuckets="25" bucketMethod="MINMAX" revenueAcceptedGood="2000" costAcceptedBad="52000" currentApprovalRate="75" badRate="3.23" precision="0" generateCharacteristicAnalysis="N" displayNoInfo="N" ModelSelection="NONE" SelectionCriterion="DEFAULT" SelectionDefault="Y" SlEntry="0.05" SlStay="0.05" Start="0" Stop="0" Force="0" Hierarchy="CLASS" Rule="NONE" MaxStep="." analysisVariables="WOE" scoreOutvars="COMPLETE" ForceRun="N" RunAction="Train" Component="Scorecard" Sequential="N">
+<VariableProperties/>
+<EmTargetAttributes/>
+<EmFileProperties>
+<EMNOTES Type="EXTERNAL" Extension="txt">
+<Data/>
+</EMNOTES>
+</EmFileProperties>
+</PROPERTIES>
+</NODE>
+<NODE CLASS="SASHELP.EMEXPL.STATEXPLORE.CLASS" COMPONENT="StatExplore" ID="Stat" X="249" Y="140" DESCRIPTION="StatExplore" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="EXPLORE" TOOLPREFIX="Stat">
+<PROPERTIES BySegment="N" Correlation="Y" Spearman="N" Pearson="Y" ChiSquare="Y" ChiSquareInterval="N" ChiSquareIntervalNBins="5" MaximumVars="1000" HideVariable="Y" DropRejected="Y" UseValidate="N" UseTest="N" UseScore="N" NObs="100000" IntervalDistribution="Y" ClassDistribution="Y" LevelSummary="Y" ForceRun="N" RunAction="Train" Component="StatExplore">
+<VariableProperties/>
+<EmTargetAttributes/>
+<EmFileProperties>
+<CROSSTAB Type="DATA">
+<Data/>
+<Metadata/>
+</CROSSTAB>
+<EMNOTES Type="EXTERNAL" Extension="txt">
+<Data/>
+</EMNOTES>
+</EmFileProperties>
+</PROPERTIES>
+</NODE>
+</NODES>
+<CONNECTIONS>
+<CONNECTION FROM="Ids" TO="Stat"/>
+<CONNECTION FROM="Ids" TO="Part"/>
+<CONNECTION FROM="Part" TO="IGN"/>
+<CONNECTION FROM="IGN" TO="Scorecard"/>
+<CONNECTION FROM="Scorecard" TO="RejInf"/>
+<CONNECTION FROM="RejInf" TO="Part2"/>
+<CONNECTION FROM="Ids2" TO="RejInf"/>
+<CONNECTION FROM="Part2" TO="IGN2"/>
+<CONNECTION FROM="IGN2" TO="Scorecard2"/>
+</CONNECTIONS>
+<NOTES>
+<DATA><![CDATA[
+
+]]>
+</DATA>
+</NOTES>
+</Workspace>
+</_ROOT_>
